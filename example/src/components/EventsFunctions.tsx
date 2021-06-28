@@ -1,8 +1,14 @@
+import type { FC } from "react";
 import { Fragment, useState } from "react";
-import { useEventsFunctionsState } from "../states/EventsFunctionsState";
+import { EventsFunctionsState } from "../states/EventsFunctionsState";
+import { useProjectState } from "create-project-state/react";
 
-const EventsFunctions = () => {
-  const [eventsFunctions, { add, remove }] = useEventsFunctionsState();
+export const EventsFunctions: FC = () => {
+  const [eventsFunctions, { add, remove }] = useProjectState<
+    [],
+    string[],
+    { add: (name: string) => void; remove: (index: number) => void }
+  >(EventsFunctionsState);
   const [newName, setNewName] = useState("");
   return (
     <ul>
@@ -19,5 +25,3 @@ const EventsFunctions = () => {
     </ul>
   );
 };
-
-export default EventsFunctions;

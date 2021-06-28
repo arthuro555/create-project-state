@@ -1,9 +1,10 @@
-import { project } from ".";
-import { createProjectState } from "../lib/createProjectState";
+import { project } from "./Project";
+import { createState } from ".";
 
 const { eventsFunctions } = project;
 
-export const useEventsFunctionsState = createProjectState({
+export const EventsFunctionsState = createState({
+  name: "eventsFunctions",
   getState: () => eventsFunctions,
   dispatchers: {
     add: (name: string) => {

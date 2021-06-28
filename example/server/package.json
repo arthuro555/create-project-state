@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "out.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/ws": "^7.4.5",
+    "esbuild": "^0.12.9",
+    "ws": "^7.5.0"
+  },
+  "scripts": {
+    "build": "esbuild ./index.ts --bundle --minify --outfile=out.js --target=node12 --platform=node",
+    "dev": "yarn build --watch"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
+  }
+}

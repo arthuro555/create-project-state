@@ -1,7 +1,8 @@
-import { FC } from "react";
-import EventsFunctions from "./EventsFunctions";
-import ProjectSettings from "./ProjectSettings";
-import UndoStack from "./UndoStackViewer";
+import type { FC } from "react";
+import { EventsFunctions } from "./EventsFunctions";
+import { ProjectSettings } from "./ProjectSettings";
+import UndoStackViewer from "./UndoStackViewer";
+import { undoStack } from "../states";
 
 const Center: FC = ({ children }) => (
   <div
@@ -29,10 +30,10 @@ const Box: FC = ({ children }) => (
   </div>
 );
 
-const App: FC = () => {
+export const App: FC = () => {
   return (
     <Center>
-      <UndoStack />
+      <UndoStackViewer undoStack={undoStack} />
       <Box>
         <ProjectSettings />
       </Box>
@@ -48,5 +49,3 @@ const App: FC = () => {
     </Center>
   );
 };
-
-export default App;

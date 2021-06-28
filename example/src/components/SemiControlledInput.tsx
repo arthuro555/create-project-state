@@ -1,6 +1,17 @@
+import type { FC } from "react";
 import { useEffect, useState } from "react";
 
-export const SemiControlledInput = ({ value, placeholder, onCommit }) => {
+type Props = {
+  value: string;
+  onCommit: (newValue: string) => void;
+  placeholder?: string;
+};
+
+export const SemiControlledInput: FC<Props> = ({
+  value,
+  placeholder,
+  onCommit,
+}) => {
   const [input, setInput] = useState(value);
   useEffect(() => {
     setInput(value);

@@ -22,7 +22,8 @@
     "noPropertyAccessFromIndexSignature": true /* Require undeclared properties from index signatures to use element accesses. */,
 
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+    "moduleResolution": "node"
   },
-  "files": ["./src/index.ts", "./src/UndoStack.ts"]
+  "files": ["./index.ts"]
 }

@@ -1,7 +1,8 @@
-import { project } from ".";
-import { createProjectState } from "../lib/createProjectState";
+import { project } from "./Project";
+import { createState } from ".";
 
-export const useProjectSettingsState = createProjectState({
+export const ProjectSettingsState = createState({
+  name: "projectSettings",
   getState: () => {
     const { name, author } = project;
     return { name, author };

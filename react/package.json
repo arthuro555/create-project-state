@@ -1,22 +1,23 @@
 {
-  "name": "create-project-state",
-  "version": "1.0.0",
-  "author": "arthuro555",
+  "name": "react",
+  "private": true,
+  "source": "index.ts",
   "types": "./dist/index.d.ts",
-  "source": "./src/index.ts",
   "exports": "./dist/index.modern.js",
   "main": "./dist/index.cjs",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
-  "license": "MIT",
   "scripts": {
-    "build": "tsc && microbundle && cd react && yarn build"
+    "build": "tsc && microbundle --external react"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "dependencies": {
+    "@types/react": "^17.0.11"
   },
   "devDependencies": {
     "microbundle": "^0.13.3",
     "typescript": "^4.3.4"
-  },
-  "mangle": {
-    "regex": "^_"
   }
 }
