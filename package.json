@@ -1,14 +1,33 @@
 {
   "name": "create-project-state",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "arthuro555",
+  "license": "MIT",
+  "keywords": [
+    "state",
+    "editor",
+    "management",
+    "dispatch",
+    "project",
+    "react",
+    "undo",
+    "remote",
+    "server"
+  ],
+  "bugs": {
+    "url": "https://github.com/arthuro555/create-project-state/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthuro555/create-project-state.git"
+  },
+  "homepage": "https://github.com/arthuro555/create-project-state#readme",
   "types": "./dist/index.d.ts",
   "source": "./src/index.ts",
   "exports": "./dist/index.modern.js",
   "main": "./dist/index.cjs",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
-  "license": "MIT",
   "scripts": {
     "build": "tsc && microbundle && cd react && yarn build"
   },
