@@ -10,9 +10,6 @@ type DispatchersMap<Declarations extends DispatchersDeclarationMap> = {
   [Decl in keyof Declarations]: Dispatcher<Declarations[Decl]>;
 };
 type StateMap = Record<string, State<any, any, any>>;
-export type AnyDispatcher = DispatchersMap<{
-  [x: string]: (...args: any) => () => void;
-}>;
 
 /**
  * A ProjectState state descriptor. It is used to construct an {@link State}.
@@ -27,6 +24,9 @@ export interface StateDescriptor<
   dispatchers: Dispatchers;
 }
 
+/**
+ * A state that can be subscribed to for whenever it changes, that has a value and dispatchers.
+ */
 export interface State<
   GetStateArgs extends any[],
   StateShape extends any,
@@ -60,9 +60,20 @@ export interface State<
   dispatchers: Dispatchers;
 }
 
+/**
+ * A controller for states.
+ *
+ * @description
+ * This state comes with multiple features:
+ *
+ * 1. The state is interacted with via a commander pattern. All commands are undoable and redoable.
+ * 2. The state has an undo/redo stack included.
+ * 3. The state is stateless, you can have your state in a separated global object.
+ * 4. The state can be hooked, to redirect all getState/dispatcher calls to somewhere else, for example a server for realtime collaboration.
+ */
 export interface ProjectState {
   /**
-   * A map of all the states.
+   * A map of all the states keyed by the state name.
    */
   states: StateMap;
 
@@ -145,7 +156,7 @@ export interface ProjectState {
  *
  * 1. The state is interacted with via a commander pattern. All commands are undoable and redoable.
  * 2. The state has an undo/redo stack included.
- * 3. The state is stateless, you can have your state in a separateb global object.
+ * 3. The state is stateless, you can have your state in a separated global object.
  * 4. The state can be hooked, to redirect all getState/dispatcher calls to somewhere else, for example a server for realtime collaboration.
  *
  * @example
