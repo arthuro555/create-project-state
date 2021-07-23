@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { UndoStack, State } from "..";
+import type { UndoStack, StateManager } from "..";
 
 /**
  * A simple hook that returns a function to trigger a rerender for the current component.
@@ -52,7 +52,7 @@ export const useUndoStack = (stack: UndoStack) => {
  *
  * @example
  * ```ts
- * // MyState: State<["name" | "surname"], string, { setState: (newState: string) => void }>
+ * // MyState: StateManager<["name" | "surname"], string, { setState: (newState: string) => void }>
  * const MyComponent = (props: { type: "name" | "surname" }) => {
  *   const [state, dispatchers] = useProjectState(MyState, props.type);
  *   return <p onClick={() => dispatchers.setState("New state")}>{state}</p>;
@@ -64,7 +64,7 @@ export const useProjectState = <
   StateShape,
   Dispatcher
 >(
-  state: State<GetStateArgs, StateShape, Dispatcher>,
+  state: StateManager<GetStateArgs, StateShape, Dispatcher>,
   ...args: GetStateArgs
 ): [StateShape, Dispatcher] => {
   // The state is used for caching the return value of getState, as it might be

@@ -13,6 +13,7 @@ yarn add create-project-state
 This is an opinionated state management library for editors. It comes with some neat features:
 
 - :white_check_mark: Fully typed
+- :white_check_mark: Framework agnostic
 - :white_check_mark: Built-in undo stack
 - :white_check_mark: Optional React hooks
 - :white_check_mark: Stateless state management
@@ -20,15 +21,15 @@ This is an opinionated state management library for editors. It comes with some 
 
 ### What is "Stateless state management"?
 
-When you use a state management method like `useState`, `useReducer` or `redux`, it will manage both modifying the state and holding the state. In this library, only the management (mutation) of the state is handled, and your state can be held in a separate object, in another library, in a WASM module, on a remote server or really anything accessible in JavaScript. This allows this library to be used in a lot more cases, and to make adding realtime collaboration easier by allowing to decouple the state holding onto a server.
+When you use a state management method like `useState`, `useReducer` or `redux`, it will manage both modifying the state and holding the state. In this library, only the management (mutation) of the state is handled, and your state can be held in a separate object, in another library, in a WASM module, on a remote server or really anything accessible in JavaScript. This allows this library to be used in a lot more cases, and to make adding features such as realtime collaboration easier by allowing to decouple the state holding onto a server.
 
 ## What is this for?
 
-As the name suggests, this library has a focus on being used inside editors, IDEs, etc. Features like the undo stack, realtime collaboration and serializing the whole project to a file can be harder tasks, which are made easier using this.
+As the name suggests, this library has a focus on being used inside editors, IDEs, etc. The library allows managing the statein a way that makes tasks such as adding an undo stack or realtime collaboration and serializing the whole project to a file much easier:
 
-- If your state is held in an object representing the project, you can just `JSON.stringify` it.
-- If you want to add an undo/redo feature to your editor, it is included with this library.
-- If you want to add realtime collaboration to your editor, it can be done in less than an hour using this library.
+- As you can hold your state anywhere, you can hold all of a projects state in one object and `JSON.stringify` it to save the project easily.
+- The library forces any operation to be undoable, making an undo/redo feature easy to implement.
+- If you want to add realtime collaboration to your editor, it can be done easily as it is designed to not hold the state directly, having it instead for example on a server.
 
 ## Examples
 
@@ -37,7 +38,7 @@ As the name suggests, this library has a focus on being used inside editors, IDE
 ```ts
 import { createProjectState } from "create-project-state";
 
-// This is the object that holds the state
+// This is an object that holds the state
 const name = { surname: "foo", name: "bar" };
 
 // Create a project state that will manage the states of the individual components

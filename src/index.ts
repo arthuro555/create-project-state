@@ -1,35 +1,65 @@
 import { UndoStack } from "./UndoStack";
 export type { UndoStack };
 
+/**
+ * A dispatcher declaration, a function that will mutate the state in a specic way and return a function to undoes that mutation.
+ */
 type DispatcherDeclarationType = (...args: any[]) => () => void;
+/**
+ * A record of dispatcher declarations.
+ */
 type DispatchersDeclarationMap = Record<string, DispatcherDeclarationType>;
+/**
+ * A utility type to convert a dispatcher declarations (functions that mutates the state and return a function to undo the operation)
+ * into a dispatcher (function that mutates the states and pushes onto an undo stack a function to undo the operation)
+ */
 type Dispatcher<Declaration extends DispatcherDeclarationType> = (
   ...args: Parameters<Declaration>
 ) => void;
+/**
+ * A utility type to convert a record of dispatcher declarations into a record of dispatchers.
+ */
 type DispatchersMap<Declarations extends DispatchersDeclarationMap> = {
   [Decl in keyof Declarations]: Dispatcher<Declarations[Decl]>;
 };
-type StateMap = Record<string, State<any, any, any>>;
+/**
+ * A record of state managers.
+ */
+type StateManagersMap = Record<string, StateManager<any, any, any>>;
 
 /**
- * A ProjectState state descriptor. It is used to construct an {@link State}.
+ * A state manager descriptor. It is used to construct an {@link StateManager}.
  */
 export interface StateDescriptor<
   GetStateArgs extends any[],
   StateShape extends any,
   Dispatchers extends DispatchersDeclarationMap
 > {
+  /**
+   * The name of a state manager. It is used to identify it in the global states map,
+   * which is necessary for server sent state updates to be dispatched to the right state manager.
+   */
   name: string;
+
+  /**
+   * A function returning the current value of the state.
+   */
   getState: (...args: GetStateArgs) => StateShape;
+
+  /**
+   * A map of dispatcher functions.
+   * A dispatcher is a function that will mutate the state in a specic way and return a function to undo that mutation.
+   * It is what is used to interact with the state, undo and redo operations.
+   */
   dispatchers: Dispatchers;
 }
 
 /**
  * A state that can be subscribed to for whenever it changes, that has a value and dispatchers.
  */
-export interface State<
+export interface StateManager<
   GetStateArgs extends any[],
-  StateShape extends any,
+  StateManagerShape extends any,
   Dispatchers
 > {
   /**
@@ -45,7 +75,7 @@ export interface State<
   /**
    * Get the current value of the state.
    */
-  getState: (...args: GetStateArgs) => StateShape;
+  getState: (...args: GetStateArgs) => StateManagerShape;
 
   /**
    * Calls the update callbacks.
@@ -73,9 +103,9 @@ export interface State<
  */
 export interface ProjectState {
   /**
-   * A map of all the states keyed by the state name.
+   * A map of all the states keyed by the state name. This is necessary to dispatch server sent state updates.
    */
-  states: StateMap;
+  states: StateManagersMap;
 
   /**
    * The project undo stack. This allows undoing an operation of one of the states.
@@ -139,7 +169,7 @@ export interface ProjectState {
     DispatchersDecls extends DispatchersDeclarationMap
   >(
     stateDesc: StateDescriptor<GetStateArgs, StateShape, DispatchersDecls>
-  ) => State<GetStateArgs, StateShape, DispatchersMap<DispatchersDecls>>;
+  ) => StateManager<GetStateArgs, StateShape, DispatchersMap<DispatchersDecls>>;
 
   /**
    * Calls the update callback of all states.
@@ -190,7 +220,7 @@ export interface ProjectState {
  */
 export const createProjectState = (): ProjectState => {
   const undoStack: UndoStack = new UndoStack();
-  const states: StateMap = {};
+  const states: StateManagersMap = {};
 
   const forceUpdateAll = () =>
     Object.values(states).map(({ forceUpdate }) => forceUpdate());
@@ -201,14 +231,18 @@ export const createProjectState = (): ProjectState => {
     DispatchersDecls extends DispatchersDeclarationMap
   >(
     stateDesc: StateDescriptor<GetStateArgs, StateShape, DispatchersDecls>
-  ): State<GetStateArgs, StateShape, DispatchersMap<DispatchersDecls>> => {
+  ): StateManager<
+    GetStateArgs,
+    StateShape,
+    DispatchersMap<DispatchersDecls>
+  > => {
     // Create basic subscription API
-    const onUpdate: (() => void)[] = [];
+    const onUpdate = new Set<() => void>();
     const subscribe = (func: () => void) => {
-      onUpdate.push(func);
+      onUpdate.add(func);
     };
     const unsubscribe = (func: () => void) => {
-      onUpdate.splice(onUpdate.indexOf(func), 1);
+      onUpdate.delete(func);
     };
     const forceUpdate = () => onUpdate.forEach((updater) => updater());
 
@@ -235,7 +269,7 @@ export const createProjectState = (): ProjectState => {
       }) as Dispatcher<typeof func>;
     }
 
-    const state: State<GetStateArgs, StateShape, Dispatchers> = {
+    const state: StateManager<GetStateArgs, StateShape, Dispatchers> = {
       getState,
       subscribe,
       unsubscribe,
@@ -243,6 +277,7 @@ export const createProjectState = (): ProjectState => {
       dispatchers: dispatchers as Dispatchers,
     };
 
+    // Cache the state for (as an example) handling server sent state updates.
     states[stateDesc.name] = state;
 
     return state;

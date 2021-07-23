@@ -5,7 +5,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "removeComments": true /* Do not emit comments to output. */,
+    "removeComments": false /* Emit comments for type definitions. */,
     "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
 
     /* Strict Type-Checking Options */

@@ -33,7 +33,7 @@ export class UndoStack {
   };
 
   /** The update callbacks list. */
-  private readonly _onUpdateStack: (() => void)[] = [];
+  private readonly _onUpdateStack = new Set<() => void>();
   /** Calls the update callbacks. */
   private _updateStack() {
     this._onUpdateStack.forEach((f) => f());
@@ -51,15 +51,14 @@ export class UndoStack {
    * Adds a callback for whenever the undo stack is changed.
    */
   subscribe(f: () => void) {
-    this._onUpdateStack.push(f);
+    this._onUpdateStack.add(f);
   }
 
   /**
    * Removes a callback for whenever the undo stack is changed.
    */
   unsubscribe(f: () => void) {
-    const index = this._onUpdateStack.indexOf(f);
-    if (index !== -1) this._onUpdateStack.splice(index, 1);
+    this._onUpdateStack.delete(f);
   }
 
   /**
